@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from app.agent_interface import run_agent
 from app.database import init_db
 from app import auth
+from app import audit
 
 
 app = FastAPI(title="ENCLAVE AI")
@@ -47,4 +48,39 @@ def chat(
     req: ChatRequest,
     user: str = Depends(auth.get_current_user)
 ):
-    return run_agent(req.question, user, req.model)
+    try:
+        result = run_agent(req.question, user, req.model)
+
+        audit.log_request(
+            user,
+            req.question,
+            result.get("sources", []),
+            result.get("tools_used", []),
+            result.get("answer", "")
+        )
+
+        return result
+
+    except Exception as e:
+
+        # Log failed requests as well
+        audit.log_request(
+            user,
+            req.question,
+            [],
+            [],
+            f"ERROR: {str(e)}"
+        )
+
+        raise HTTPException(
+            status_code=500,
+            detail="An error occurred while processing your request."
+        )
+
+
+@app.get("/audit")
+def get_audit(
+    limit: int = 100,
+    user: str = Depends(auth.get_current_user)
+):
+    return audit.get_recent(limit)
