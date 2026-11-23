@@ -6,7 +6,7 @@ Enclave AI is a document question-answering workbench with cited answers, a sear
 
 The local setup sends model requests to Ollama on `localhost` and keeps uploaded documents on the computer running the app. The public repository intentionally omits the original planning files and bundled inspection examples.
 
-Cloud hosting changes this boundary: uploaded documents and questions are stored on the hosted backend, and model traffic goes to the configured remote Ollama service. This repository does not include a cloud deployment configuration. Set up persistent storage and strong environment secrets before exposing a cloud instance.
+Cloud hosting changes this boundary: uploaded documents and questions are stored on the hosted backend, and model traffic goes to the configured Ollama service. The Oracle Cloud Always Free setup is documented in `deploy/ORACLE.md`; it uses persistent Docker volumes and Caddy-managed HTTPS. Oracle's free ARM VM has limited CPU, so local model responses may be slow.
 
 ## Run locally
 
