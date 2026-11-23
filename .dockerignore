@@ -1,0 +1,14 @@
+.git
+.venv
+venv
+node_modules
+__pycache__
+*.pyc
+.env
+deploy/oracle.env
+backend/data
+backend/*.db
+docs
+sample_docs
+tests
+
